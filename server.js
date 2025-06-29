@@ -1,13 +1,15 @@
-"use strict";
-
-const express = require("express");
+const express = require('express');
+const path = require('path');
 const app = express();
+const PORT = 3000;
 
-const port = 8080;
 
-app.use(express.static("./public"));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(port, () => {
-    console.log(`Server is running http://localhost:${port}`);
-    console.log("Press Ctrl+C to end this process.");
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
