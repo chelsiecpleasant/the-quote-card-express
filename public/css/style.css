@@ -1,0 +1,7 @@
+.background-img {
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../img/mockup.jpg");
+    background-size: cover;
+    background-position: center;
+}
