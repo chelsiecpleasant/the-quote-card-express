@@ -1,15 +1,17 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const PORT = 3000;
+const fetch = require('node-fetch'); 
 
+app.get('/api/photo', async (req, res) => {
+  const key = process.env.UNSPLASH_ACCESS_KEY;
+  const endpoint = `https://api.unsplash.com/photos/random?client_id=${key}`;
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  try {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    res.json({ url: data.urls.regular });
+  } catch (error) {
+    console.error("Unsplash fetch error:", error);
+    res.status(500).json({ error: "Failed to fetch image" });
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+
