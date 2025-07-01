@@ -1,29 +1,40 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
+
+const corsOptions = {
+  origin: `http://localhost:${port}` 
+};
+app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/photo', async (req, res) => {
-  const key = process.env.UNSPLASH_ACCESS_KEY;
-  const endpoint = `https://api.unsplash.com/photos/random?client_id=${key}`;
-
+async function getRandomImage() {
+  const endpoint = `https://api.unsplash.com/photos/random/?client_id=${process.env.CLIENT_ID}`;
   try {
     const response = await fetch(endpoint);
-    const data = await response.json();
-    res.json({ url: data.urls.regular });
+    const returnedData = await response.json();
+    return returnedData.urls.regular;
   } catch (error) {
-    console.error("Unsplash fetch error:", error);
-    res.status(500).json({ error: "Failed to fetch image" });
+    console.error('Unsplash API error:', error);
+    return null;
   }
+}
+
+app.use("/api/v1/getRandomImage", async (req, res) => {
+  const url = await getRandomImage();
+  res.status(200).json({
+    status: 200,
+    data: url,
+  });
 });
 
-// ✅ Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
 });
