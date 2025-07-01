@@ -1,4 +1,13 @@
-const fetch = require('node-fetch'); 
+const express = require('express');
+const fetch = require('node-fetch');
+const path = require('path');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/photo', async (req, res) => {
   const key = process.env.UNSPLASH_ACCESS_KEY;
@@ -14,4 +23,7 @@ app.get('/api/photo', async (req, res) => {
   }
 });
 
-
+// ✅ Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
